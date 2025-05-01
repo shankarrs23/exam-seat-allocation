@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Seat Allocation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="logo">
+            <i class="fas fa-chair"></i>
+            <span>ExamSeatPro</span>
+        </div>
+        <div class="nav-links">
+            <a href="#" class="active" data-page="home">
+                <i class="fas fa-home"></i> Home
+            </a>
+            <a href="#" data-page="login">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </a>
+            <a href="#" data-page="signup">
+                <i class="fas fa-user-plus"></i> Signup
+            </a>
+            <a href="#" data-page="allocate" id="allocate-link">
+                <i class="fas fa-tasks"></i> Allocate
+            </a>
+            <a href="#" data-page="view-seats" id="view-seats-link">
+                <i class="fas fa-list"></i> View Seats
+            </a>
+            <div class="user-info" id="user-info">
+                <span id="user-email"></span>
+                <button id="logout-btn"><i class="fas fa-sign-out-alt"></i></button>
+            </div>
+        </div>
+        <div class="hamburger" id="hamburger">
+            <i class="fas fa-bars"></i>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobile-menu">
+        <a href="#" class="active" data-page="home">
+            <i class="fas fa-home"></i> Home
+        </a>
+        <a href="#" data-page="login">
+            <i class="fas fa-sign-in-alt"></i> Login
+        </a>
+        <a href="#" data-page="signup">
+            <i class="fas fa-user-plus"></i> Signup
+        </a>
+        <a href="#" data-page="allocate" id="mobile-allocate-link">
+            <i class="fas fa-tasks"></i> Allocate
+        </a>
+        <a href="#" data-page="view-seats" id="mobile-view-seats-link">
+            <i class="fas fa-list"></i> View Seats
+        </a>
+        <div class="mobile-user-info" id="mobile-user-info">
+            <span id="mobile-user-email"></span>
+            <button id="mobile-logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </div>
+    </div>
+
+    <!-- Pages -->
+    <div id="pages">
+        <!-- Home Page -->
+        <div id="home-page" class="page active">
+            <div class="hero">
+                <div class="hero-content">
+                    <h1>Examination Seat Allocation System</h1>
+                    <p class="subtitle">Automatically assign students to exam seats with precision and efficiency</p>
+                    <div class="hero-buttons">
+                        <button id="home-allocate-btn" class="btn-primary btn-hero">
+                            <i class="fas fa-tasks"></i> Allocate Seats
+                        </button>
+                        <button id="home-view-seat-btn" class="btn-secondary btn-hero">
+                            <i class="fas fa-search"></i> Find My Seat
+                        </button>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <img src="Screenshot 2025-04-09 160744.png" alt="Classroom illustration">
+                </div>
+            </div>
+            
+            <div class="features-container">
+                <h2 class="section-title">Why Choose Our System</h2>
+                <div class="features">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <h3>Lightning Fast</h3>
+                        <p>Allocate hundreds of students in seconds with our optimized algorithm</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-balance-scale"></i>
+                        </div>
+                        <h3>Fair Distribution</h3>
+                        <p>Ensures equal distribution across all available examination rooms</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3>Secure Access</h3>
+                        <p>Role-based authentication protects sensitive allocation data</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- New Dynamic Stats Container -->
+            <div class="stats-container">
+                <div class="stat-card" id="students-stat-card">
+                    <i class="fas fa-users"></i>
+                    <div>
+                        <span class="stat-number" id="students-count">0</span>
+                        <span class="stat-label">Students</span>
+                    </div>
+                </div>
+                <div class="stat-card" id="classrooms-stat-card">
+                    <i class="fas fa-door-open"></i>
+                    <div>
+                        <span class="stat-number" id="classrooms-count">0</span>
+                        <span class="stat-label">Classrooms</span>
+                    </div>
+                </div>
+                <div class="stat-card" id="exams-stat-card">
+                    <i class="fas fa-calendar-check"></i>
+                    <div>
+                        <span class="stat-number" id="exams-count">0</span>
+                        <span class="stat-label">Exams</span>
+                    </div>
+                </div>
+                <!-- New Recent Activity Card -->
+                <div class="stat-card" id="activity-stat-card">
+                    <i class="fas fa-chart-line"></i>
+                    <div>
+                        <span class="stat-number" id="recent-activity-count">0</span>
+                        <span class="stat-label">Recent Activities</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- New Recent Activity Section -->
+            <div class="recent-activity-container">
+                <h2 class="section-title">Recent Activity</h2>
+                <div class="activity-timeline" id="activity-timeline">
+                    <!-- Activity items will be dynamically generated -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Login Page -->
+        <div id="login-page" class="page">
+            <div class="auth-container">
+                <div class="auth-card">
+                    <div class="auth-header">
+                        <h2>Welcome Back</h2>
+                        <p>Please login to access your account</p>
+                    </div>
+                    <form id="login-form">
+                        <div class="form-group">
+                            <label for="role">Role</label>
+                            <div class="select-wrapper">
+                                <select id="role" required>
+                                    <option value="" disabled selected>Select your role</option>
+                                    <option value="student">Student</option>
+                                    <option value="admin">Admin</option>
+                                </select>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" placeholder="Enter your email" required>
+                            <i class="fas fa-envelope input-icon"></i>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" id="password" placeholder="Enter your password" required>
+                            <i class="fas fa-lock input-icon"></i>
+                        </div>
+                        <div class="form-options">
+                            <label class="checkbox-container">
+                                <input type="checkbox" id="remember-me">
+                                <span class="checkmark"></span>
+                                Remember me
+                            </label>
+                            <a href="#" class="forgot-password">Forgot password?</a>
+                        </div>
+                        <button type="submit" class="btn-primary btn-auth">
+                            <i class="fas fa-sign-in-alt"></i> Login
+                        </button>
+                        <p id="login-message" class="auth-message"></p>
+                        <div class="auth-footer">
+                            <p>Don't have an account? <a href="#" id="show-signup">Sign up</a></p>
+                        </div>
+                    </form>
+                </div>
+                <div class="auth-image">
+                    <img src="log-in.png" alt="Login illustration">
+                </div>
+            </div>
+        </div>
+
+        <!-- Signup Page -->
+        <div id="signup-page" class="page">
+            <div class="auth-container">
+                <div class="auth-card">
+                    <div class="auth-header">
+                        <h2>Create Account</h2>
+                        <p>Join us to manage exam seating efficiently</p>
+                    </div>
+                    <form id="signup-form">
+                        <div class="form-group">
+                            <label for="signup-role">Role</label>
+                            <div class="select-wrapper">
+                                <select id="signup-role" required>
+                                    <option value="" disabled selected>Select your role</option>
+                                    <option value="student">Student</option>
+                                    <option value="admin">Admin</option>
+                                </select>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="signup-email">Email</label>
+                            <input type="email" id="signup-email" placeholder="Enter your email" required>
+                            <i class="fas fa-envelope input-icon"></i>
+                        </div>
+                        <div class="form-group">
+                            <label for="signup-password">Password</label>
+                            <input type="password" id="signup-password" placeholder="Create a password" required>
+                            <i class="fas fa-lock input-icon"></i>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirm-password">Confirm Password</label>
+                            <input type="password" id="confirm-password" placeholder="Confirm your password" required>
+                            <i class="fas fa-lock input-icon"></i>
+                        </div>
+                        <div class="password-strength">
+                            <div class="strength-meter">
+                                <span class="strength-bar"></span>
+                                <span class="strength-bar"></span>
+                                <span class="strength-bar"></span>
+                            </div>
+                            <span class="strength-text">Password strength</span>
+                        </div>
+                        <button type="submit" class="btn-primary btn-auth">
+                            <i class="fas fa-user-plus"></i> Sign Up
+                        </button>
+                        <p id="signup-message" class="auth-message"></p>
+                        <div class="auth-footer">
+                            <p>Already have an account? <a href="#" id="show-login">Login</a></p>
+                        </div>
+                    </form>
+                </div>
+                <div class="auth-image">
+                    <img src="add-friend.png" alt="Signup illustration">
+                </div>
+            </div>
+        </div>
+
+        <!-- Allocate Page (Admin Only) -->
+        <div id="allocate-page" class="page">
+            <div class="page-header">
+                <h2><i class="fas fa-tasks"></i> Seat Allocation</h2>
+                <p>Configure exam rooms and assign students to seats</p>
+            </div>
+            
+            <div class="allocation-container">
+                <form id="allocation-form">
+                    <div class="form-section">
+                        <h3><i class="fas fa-user-tie"></i> Admin Information</h3>
+                        <div class="form-group">
+                            <label for="admin-name">Admin Name</label>
+                            <input type="text" id="admin-name" placeholder="Enter your full name" required>
+                            <i class="fas fa-user input-icon"></i>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3><i class="fas fa-door-open"></i> Classroom Configuration</h3>
+                        <div class="form-group">
+                            <label>Classroom 1</label>
+                            <div class="room-config">
+                                <div class="input-with-icon">
+                                    <input type="text" placeholder="Room Name" class="room-name" required>
+                                    <i class="fas fa-door-closed"></i>
+                                </div>
+                                <div class="input-with-icon">
+                                    <input type="number" placeholder="Rows" class="room-rows" required min="1">
+                                    <i class="fas fa-grip-lines"></i>
+                                </div>
+                                <div class="input-with-icon">
+                                    <input type="number" placeholder="Columns" class="room-cols" required min="1">
+                                    <i class="fas fa-grip-lines-vertical"></i>
+                                </div>
+                                <div class="input-with-icon">
+                                    <input type="text" placeholder="Invigilator (Name-ID)" class="room-invigilator" required>
+                                    <i class="fas fa-user-shield"></i>
+                                </div>
+                            </div>
+                            <!-- New Room Preview Container -->
+                            <div class="room-preview-container">
+                                <div class="room-preview" data-room-index="0"></div>
+                            </div>
+                        </div>
+                        <div id="additional-rooms"></div>
+                        <button type="button" id="add-room-btn" class="btn-secondary">
+                            <i class="fas fa-plus-circle"></i> Add Another Room
+                        </button>
+                    </div>
+
+                    <div class="form-section">
+                        <h3><i class="fas fa-users"></i> Student List</h3>
+                        <div class="form-group">
+                            <label for="students-input">Students (Format: Name-RollNo, separated by commas)</label>
+                            <textarea id="students-input" rows="5" placeholder="e.g., Vijay-22UIT142, Prasanna-22UIT122, John-22UIT101" required></textarea>
+                            <div class="input-hint">
+                                <i class="fas fa-info-circle"></i> Enter students in format Name-RollNo, separated by commas
+                            </div>
+                        </div>
+                        <!-- New Student Count Display -->
+                        <div class="student-count-display">
+                            <span id="student-count">0</span> students entered
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-chair"></i> Allocate Seats
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Edit Controls Section -->
+                <div id="edit-controls" class="edit-controls-container">
+                    <div class="edit-header">
+                        <h3><i class="fas fa-edit"></i> Edit Allocated Seats</h3>
+                        <p>Modify existing seat allocations as needed</p>
+                    </div>
+                    <div class="edit-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="edit-room-select">Classroom</label>
+                                <div class="select-wrapper">
+                                    <select id="edit-room-select" class="form-control" disabled>
+                                        <option value="">Allocate seats first</option>
+                                    </select>
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-seat-select">Seat</label>
+                                <div class="select-wrapper">
+                                    <select id="edit-seat-select" class="form-control" disabled>
+                                        <option value="">Select classroom first</option>
+                                    </select>
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="student-details" id="student-details">
+                            <div class="detail-card">
+                                <div class="detail-icon">
+                                    <i class="fas fa-user-graduate"></i>
+                                </div>
+                                <div class="detail-content">
+                                    <span class="detail-label">Current Student</span>
+                                    <span class="detail-value" id="current-student">None selected</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="edit-buttons">
+                            <button type="button" id="delete-btn" class="btn-danger" disabled>
+                                <i class="fas fa-trash-alt"></i> Delete Student
+                            </button>
+                            <button type="button" id="replace-btn" class="btn-warning" disabled>
+                                <i class="fas fa-exchange-alt"></i> Replace Student
+                            </button>
+                        </div>
+                        
+                        <div id="replace-form" class="replace-form-container">
+                            <div class="form-group">
+                                <label for="new-student">New Student (Name-RollNo)</label>
+                                <div class="input-with-icon">
+                                    <input type="text" id="new-student" class="form-control" placeholder="e.g., John-22UIT101" disabled>
+                                    <i class="fas fa-user-plus"></i>
+                                </div>
+                            </div>
+                            <button type="button" id="confirm-replace-btn" class="btn-primary" disabled>
+                                <i class="fas fa-check-circle"></i> Confirm Replacement
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- View Seats Page (Admin Only) -->
+        <div id="view-seats-page" class="page">
+            <div class="page-header">
+                <h2><i class="fas fa-list"></i> Seat Allocation Results</h2>
+                <p>View and manage all allocated examination seats</p>
+            </div>
+            
+            <div class="results-container">
+                <div class="results-actions">
+                    <button id="download-excel" class="action-btn primary">
+                        <i class="fas fa-file-excel"></i> Download as Excel
+                    </button>
+                    <button id="print-results" class="action-btn secondary">
+                        <i class="fas fa-print"></i> Print
+                    </button>
+                </div>
+                
+                <div id="allocation-results"></div>
+                
+                <div class="results-summary">
+                    <div class="summary-card">
+                        <i class="fas fa-users"></i>
+                        <div>
+                            <span class="summary-number" id="total-students">0</span>
+                            <span class="summary-label">Total Students</span>
+                        </div>
+                    </div>
+                    <div class="summary-card">
+                        <i class="fas fa-door-open"></i>
+                        <div>
+                            <span class="summary-number" id="total-rooms">0</span>
+                            <span class="summary-label">Classrooms</span>
+                        </div>
+                    </div>
+                    <div class="summary-card">
+                        <i class="fas fa-user-shield"></i>
+                        <div>
+                            <span class="summary-number" id="total-invigilators">0</span>
+                            <span class="summary-label">Invigilators</span>
+                        </div>
+                    </div>
+                    <!-- Enhanced Utilization Summary Card -->
+                    <div class="summary-card">
+                        <i class="fas fa-percentage"></i>
+                        <div>
+                            <span class="summary-number" id="room-utilization">0%</span>
+                            <span class="summary-label">Room Utilization</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- View Seat Page (Student Only) -->
+        <div id="view-seat-page" class="page">
+            <div class="page-header">
+                <h2><i class="fas fa-search"></i> Find Your Exam Seat</h2>
+                <p>Enter your roll number to locate your examination seat</p>
+            </div>
+            
+            <div class="seat-search-container">
+                <div class="search-card">
+                    <form id="find-seat-form">
+                        <div class="form-group">
+                            <label for="roll-no">Roll Number</label>
+                            <div class="input-with-icon">
+                                <input type="text" id="roll-no" placeholder="e.g., 22UIT142" required>
+                                <i class="fas fa-id-card"></i>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-search"></i> Find My Seat
+                        </button>
+                    </form>
+                </div>
+                
+                <div id="seat-result" class="seat-result-container">
+                    <div class="initial-message">
+                        <i class="fas fa-chair"></i>
+                        <p>Enter your roll number to find your exam seat details</p>
+                    </div>
+                </div>
+                
+                <!-- New Dynamic Classroom Visualization -->
+                <div id="classroom-visualization" class="classroom-visualization">
+                    <!-- Will be populated dynamically -->
+                </div>
+                
+                <!-- New Seat Neighbors Display -->
+                <div id="seat-neighbors" class="seat-neighbors">
+                    <h3><i class="fas fa-users"></i> Your Neighbors</h3>
+                    <div class="neighbors-grid" id="neighbors-grid">
+                        <!-- Will be populated dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <div class="toast-content">
+            <i class="fas fa-check-circle toast-icon"></i>
+            <span class="toast-message">Operation completed successfully</span>
+        </div>
+    </div>
+    
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="spinner"></div>
+        <p>Processing your request...</p>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
