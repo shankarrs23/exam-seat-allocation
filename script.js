@@ -1,4 +1,5 @@
 // Global variables
+const BASE_URL = "https://exam-seat-backend.onrender.com";
 let currentUser = null;
 let allocations = [];
 let currentAllocation = null;
@@ -55,58 +56,49 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Login form
-    document.getElementById('login-form').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const role = document.getElementById('role').value;
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-        
-        // Simple validation
-        if (!email || !password) {
-            showToast('Please fill all fields', 'error');
-            return;
-        }
+// ✅ Real login using backend API
+fetch(`${BASE_URL}/api/login`, {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ email, password, role })
+})
+.then(res => res.json())
+.then(data => {
+  if (data.token) {
+    localStorage.setItem("token", data.token);
+    currentUser = { email, role };
+    updateUIForUser();
+    showPage("home");
+    showToast("Login successful!");
+    updateHomeStats();
+  } else {
+    showToast(data.message || "Login failed", "error");
+  }
+})
+.catch(() => {
+  showToast("Login error", "error");
+});
 
-        // Mock login - in a real app, this would call your backend
-        currentUser = { email, role };
-        document.getElementById('login-message').textContent = '';
-        
-        // Update UI based on role
-        updateUIForUser();
-        showPage('home');
-        showToast('Login successful!');
-        
-        // Update stats on home page
-        updateHomeStats();
-    });
 
-    // Signup form
-    document.getElementById('signup-form').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const role = document.getElementById('signup-role').value;
-        const email = document.getElementById('signup-email').value;
-        const password = document.getElementById('signup-password').value;
-        const confirmPassword = document.getElementById('confirm-password').value;
-        
-        // Validation
-        if (!email || !password || !confirmPassword) {
-            showToast('Please fill all fields', 'error');
-            return;
-        }
+// ✅ Real signup using backend API
+fetch(`${BASE_URL}/api/register`, {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ email, password, role })
+})
+.then(res => res.json())
+.then(data => {
+  if (data.message === "User registered successfully") {
+    showToast("Signup successful! Please login.");
+    setTimeout(() => showPage("login"), 1500);
+  } else {
+    showToast(data.message || "Signup failed", "error");
+  }
+})
+.catch(() => {
+  showToast("Signup error", "error");
+});
 
-        if (password !== confirmPassword) {
-            showToast('Passwords do not match', 'error');
-            return;
-        }
-
-        // Mock signup - in a real app, this would call your backend
-        currentUser = { email, role };
-        showToast('Signup successful! Please login.');
-        setTimeout(() => {
-            showPage('login');
-        }, 1500);
-    });
 
     // Password strength indicator
     document.getElementById('signup-password').addEventListener('input', function() {
@@ -288,53 +280,31 @@ function handleAllocation(e) {
         return;
     }
     
-    // Simulate server processing delay
-    setTimeout(() => {
-        // Allocate students to classrooms (simple round-robin allocation)
-        let studentIndex = 0;
-        for (let room of classrooms) {
-            for (let row = 0; row < room.rows; row++) {
-                for (let col = 0; col < room.cols; col++) {
-                    if (studentIndex < studentEntries.length) {
-                        const [name, rollNo] = studentEntries[studentIndex].split('-');
-                        room.students.push({
-                            name: name || 'Unknown',
-                            rollNo: rollNo || 'N/A',
-                            row,
-                            col,
-                            seatNumber: `r${row+1}c${col+1}` // Add seat number
-                        });
-                        studentIndex++;
-                    }
-                }
-            }
-        }
-        
-        // Save allocation (in a real app, this would call your backend)
-        const allocation = {
-            adminName,
-            classrooms,
-            date: new Date().toLocaleString()
-        };
-        allocations.push(allocation);
-        currentAllocation = allocation;
-        
-        // Record activity
-        addActivity('Seats Allocated', `${studentEntries.length} students allocated across ${classrooms.length} classrooms`, 'fas fa-chair');
-        
-        // Display results
-        displayAllocationResults(allocation);
-        
-        // Enable edit controls
-        setupEditControls(allocation);
+    // Send allocation to backend
+    fetch(`${BASE_URL}/api/allocations`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem("token")}`
+        },
+        body: JSON.stringify({ adminName, classrooms })
+    })
+    .then(res => res.json())
+    .then(data => {
+        currentAllocation = data;
+        displayAllocationResults(data);
+        setupEditControls(data);
         enableEditControls(true);
-        
-        hideLoading(); // Hide loading overlay
-        showToast('Seats allocated successfully!');
-        showPage('view-seats');
-    }, 1500); // Simulated delay for better UX
+        hideLoading();
+        showToast("Seats allocated successfully!");
+        showPage("view-seats");
+    })
+    .catch(err => {
+        console.error(err);
+        hideLoading();
+        showToast("Allocation failed", "error");
+    });
 }
-
 // Enable/disable edit controls
 function enableEditControls(enabled) {
     document.getElementById('edit-room-select').disabled = !enabled;
