@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('mobile-menu').classList.toggle('active');
     });
 
-    // Show signup/login links
+    // Show signup/login link
     document.getElementById('show-signup').addEventListener('click', function(e) {
         e.preventDefault();
         showPage('signup');
